@@ -1,0 +1,40 @@
+version: '3'
+services:
+  haproxy:
+    build: 
+      context: .
+    ports:
+    - "80:80"
+    - "1936:1936" 
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    container_name: haproxy
+    networks:
+      custom_network:
+        ipv4_address: 192.168.1.102
+
+  backend1:
+    build:
+      context: ./backend1
+    ports:
+      - "8081:8081"
+    networks:
+      custom_network:
+        ipv4_address: 192.168.1.103
+
+  backend2:
+    build:
+      context: ./backend2
+    ports:
+      - "8082:8082"
+    networks:
+      custom_network:
+        ipv4_address: 192.168.1.104
+
+networks:
+  custom_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.1.0/24
